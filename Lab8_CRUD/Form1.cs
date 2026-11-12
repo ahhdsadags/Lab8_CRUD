@@ -23,8 +23,12 @@ namespace Lab8_CRUD
             buttonUpdate.Click += buttonUpdate_Click;
             buttonDelete.Click += buttonDelete_Click;
             buttonClear.Click += buttonClear_Click;
-            buttonExport.Click += buttonExport_Click;   
-            buttonCancel.Click += buttonCancel_Click;   
+            buttonExport.Click += buttonExport_Click;
+            buttonCancel.Click += buttonCancel_Click;
+
+            // --- НОВОЕ: Привязка событий для поиска ---
+            buttonSearch.Click += buttonSearch_Click;
+            textBoxSearch.KeyDown += textBoxSearch_KeyDown;
         }
 
         // ---------- ЗАГРУЗКА ФОРМЫ (READ) ----------
@@ -33,15 +37,29 @@ namespace Lab8_CRUD
             LoadStudents();
         }
 
-        private void LoadStudents()
+        // --- ИЗМЕНЕНО: Добавлен параметр для фильтрации ---
+        private void LoadStudents(string searchFilter = "")
         {
             try
             {
-                using (var conn = new SqlConnection(connectionString))
-                using (var da = new SqlDataAdapter(
-                    "SELECT Id, FullName AS [ФИО], Age AS [Возраст], " +
-                    "GroupName AS [Группа], AverageGrade AS [Средний балл] FROM Students", conn))
+                string query = "SELECT Id, FullName AS [ФИО], Age AS [Возраст], " +
+                               "GroupName AS [Группа], AverageGrade AS [Средний балл] FROM Students";
+
+                // Если введен текст для поиска, добавляем условие WHERE
+                if (!string.IsNullOrWhiteSpace(searchFilter))
                 {
+                    query += " WHERE FullName LIKE @search";
+                }
+
+                using (var conn = new SqlConnection(connectionString))
+                using (var da = new SqlDataAdapter(query, conn))
+                {
+                    // Передаем параметр поиска, если он есть
+                    if (!string.IsNullOrWhiteSpace(searchFilter))
+                    {
+                        da.SelectCommand.Parameters.AddWithValue("@search", "%" + searchFilter.Trim() + "%");
+                    }
+
                     var dt = new DataTable();
                     da.Fill(dt);
 
@@ -58,6 +76,21 @@ namespace Lab8_CRUD
             {
                 MessageBox.Show("Ошибка загрузки: " + ex.Message,
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // --- НОВОЕ: Обработчики поиска ---
+        private void buttonSearch_Click(object sender, EventArgs e)
+        {
+            LoadStudents(textBoxSearch.Text);
+        }
+
+        private void textBoxSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                LoadStudents(textBoxSearch.Text);
+                e.SuppressKeyPress = true; // Убирает звук при нажатии Enter
             }
         }
 
@@ -112,7 +145,7 @@ namespace Lab8_CRUD
                     }
                 }
 
-                LoadStudents();
+                LoadStudents(textBoxSearch.Text); // Обновляем с учетом текущего поиска
                 ClearFields();
                 UpdateStatus("Студент добавлен");
             }
@@ -157,7 +190,7 @@ namespace Lab8_CRUD
                     }
                 }
 
-                LoadStudents();
+                LoadStudents(textBoxSearch.Text); // Обновляем с учетом текущего поиска
                 ClearFields();
                 UpdateStatus("Данные обновлены");
             }
@@ -196,7 +229,7 @@ namespace Lab8_CRUD
                     cmd.ExecuteNonQuery();
                 }
 
-                LoadStudents();
+                LoadStudents(textBoxSearch.Text); // Обновляем с учетом текущего поиска
                 ClearFields();
                 UpdateStatus("Запись удалена");
             }
@@ -210,6 +243,8 @@ namespace Lab8_CRUD
         // ---------- ОЧИСТКА ----------
         private void buttonClear_Click(object sender, EventArgs e)
         {
+            textBoxSearch.Clear(); // Очищаем поле поиска
+            LoadStudents();        // Загружаем всех студентов заново
             ClearFields();
             UpdateStatus("Поля очищены");
         }
@@ -267,6 +302,7 @@ namespace Lab8_CRUD
         {
             if (_lastSnapshot == null) { LoadStudents(); return; }
             dataGridViewStudents.DataSource = _lastSnapshot.Copy();
+            textBoxSearch.Clear(); // Сбрасываем поиск
             ClearFields();
             UpdateStatus("Изменения отменены (таблица перезагружена)");
         }
@@ -295,6 +331,11 @@ namespace Lab8_CRUD
             int count = dataGridViewStudents.Rows.Count;
             if (dataGridViewStudents.AllowUserToAddRows) count--;
             labelStatus.Text = $"{message} | Всего студентов: {count}";
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

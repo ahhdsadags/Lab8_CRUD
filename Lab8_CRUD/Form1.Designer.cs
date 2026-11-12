@@ -44,6 +44,9 @@
             labelStatus = new Label();
             buttonExport = new Button();
             buttonCancel = new Button();
+            label = new Label();
+            textBoxSearch = new TextBox();
+            buttonSearch = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewStudents).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericAge).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericGrade).BeginInit();
@@ -195,11 +198,40 @@
             buttonCancel.UseVisualStyleBackColor = true;
             buttonCancel.Click += buttonCancel_Click;
             // 
+            // label
+            // 
+            label.AutoSize = true;
+            label.Location = new Point(12, 266);
+            label.Name = "label";
+            label.Size = new Size(92, 15);
+            label.TabIndex = 16;
+            label.Text = "Поиск по ФИО:";
+            label.Click += label1_Click;
+            // 
+            // textBoxSearch
+            // 
+            textBoxSearch.Location = new Point(110, 266);
+            textBoxSearch.Name = "textBoxSearch";
+            textBoxSearch.Size = new Size(100, 23);
+            textBoxSearch.TabIndex = 17;
+            // 
+            // buttonSearch
+            // 
+            buttonSearch.Location = new Point(113, 295);
+            buttonSearch.Name = "buttonSearch";
+            buttonSearch.Size = new Size(75, 23);
+            buttonSearch.TabIndex = 18;
+            buttonSearch.Text = "Найти";
+            buttonSearch.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
+            Controls.Add(buttonSearch);
+            Controls.Add(textBoxSearch);
+            Controls.Add(label);
             Controls.Add(buttonCancel);
             Controls.Add(buttonExport);
             Controls.Add(labelStatus);
@@ -244,5 +276,8 @@
         private Label labelStatus;
         private Button buttonExport;
         private Button buttonCancel;
+        private Label label;
+        private TextBox textBoxSearch;
+        private Button buttonSearch;
     }
 }
