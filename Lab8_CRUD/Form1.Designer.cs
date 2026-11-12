@@ -47,6 +47,7 @@
             label = new Label();
             textBoxSearch = new TextBox();
             buttonSearch = new Button();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridViewStudents).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericAge).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericGrade).BeginInit();
@@ -224,11 +225,21 @@
             buttonSearch.Text = "Найти";
             buttonSearch.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(570, 452);
+            label1.Name = "label1";
+            label1.Size = new Size(38, 15);
+            label1.TabIndex = 19;
+            label1.Text = "label1";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 561);
+            Controls.Add(label1);
             Controls.Add(buttonSearch);
             Controls.Add(textBoxSearch);
             Controls.Add(label);
@@ -279,5 +290,6 @@
         private Label label;
         private TextBox textBoxSearch;
         private Button buttonSearch;
+        private Label label1;
     }
 }
